@@ -7,8 +7,6 @@ from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.stem import PorterStemmer
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import wordnet as wn
-import nltk
-import cgi, cgitb
 import requests
 
 def test(request):
@@ -17,15 +15,13 @@ def test(request):
     viet =  request.POST.get('vietsenten')
     submit = request.POST.get('submit')
 
-    eng = preprocessing(eng)
-    viet= preprocessing(viet)
+    englist = preprocessing(eng)
+    vietlist= preprocessing(viet)
     
-    for w1 in eng:
-        for w2 in viet:
-                print (wup_simi(w1,w2))
+    for w1 in englist:
+        for w2 in vietlist:
+                wup_simi(w1,w2)
 
-    #print (eng +" "+ viet)
-    #print (wup_simi('cat','dog'))
     context= {'engsenten': preprocessing(eng), 'vietsenten': preprocessing(viet), 'submit': submit}
     return render(request, 'home.html', context )
 
@@ -45,8 +41,8 @@ def wup_simi(text1, text2):
             currScore = wn.wup_similarity(synset1, synset2)
             if currScore > maxScore:
                 maxScore = currScore
-    
-    return maxScore
+    print(maxScore)
+    #return maxScore
 
 def preprocessing(text):
     #bỏ in hoa
@@ -67,7 +63,7 @@ def preprocessing(text):
     lem_sentence=[]
     for word in filtered_sentence: # or filtered_sentence:
         lem_sentence.append(lemmatizer.lemmatize(word))
-        lem_sentence.append(" ")
+        #lem_sentence.append(" ")
     
     #gắn thẻ 
     """lotr_pos_tags = nltk.pos_tag(lem_sentence)
@@ -81,7 +77,7 @@ def preprocessing(text):
     stem_sentence=[]
     for word in lem_sentence:
         stem_sentence.append(PorterStemmer().stem(word))
-        stem_sentence.append(" ")
+        #stem_sentence.append(" ")
     
     #pos_tagged_sentence = nltk.pos_tag(lem_sentence.split())
     #lem_sentence.append(" ".join([lemmatizer.lemmatize(word, wordnet_map.get(pos[0], wordnet.NOUN)) for word, pos in pos_tagged_sentence]))
