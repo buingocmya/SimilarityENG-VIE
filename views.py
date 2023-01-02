@@ -3,11 +3,13 @@ from nltk.corpus import wordnet as wn
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 import string
-from nltk.tokenize import sent_tokenize, word_tokenize
+from nltk.tokenize import word_tokenize
 from nltk.stem import PorterStemmer
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import wordnet as wn
+from scipy import spatial
 import requests
+from googletrans import Translator
 
 def test(request):
     #next = request.GET('next','')
@@ -15,21 +17,52 @@ def test(request):
     viet =  request.POST.get('vietsenten')
     submit = request.POST.get('submit')
 
+    viet=trans(viet)
+
     englist = preprocessing(eng)
     vietlist= preprocessing(viet)
     
-    for w1 in englist:
-        for w2 in vietlist:
-                wup_simi(w1,w2)
+    result = simiS(englist,vietlist)
 
-    context= {'engsenten': preprocessing(eng), 'vietsenten': preprocessing(viet), 'submit': submit}
+    context= {'engsenten': preprocessing(eng), 'vietsenten': preprocessing(viet), 'submit': submit, 'result': result}
     return render(request, 'home.html', context )
 
 def get_home(request):
     return render(request,'home.html')
 
+def trans(text):
+    translate = Translator()
+    result = translate.translate(text)
+    return result.text
+
+def simiS(text1, text2):
+    listtext = text1 + text2
+    print("list text: ", listtext)
+    vector1 = []
+    for w in listtext:
+        max = 0
+        for w1 in text1:
+            tmp = wup_simi(w,w1)
+            if tmp>max:
+                max = tmp 
+        vector1.append(max);
+    print('vector1 =', vector1)
+    
+    vector2 = []
+    for w in listtext:
+        max = 0
+        for w2 in text2:
+            tmp = wup_simi(w,w2)
+            if tmp>max:
+                max = tmp 
+        vector2.append(max);
+    print('vector2 =', vector2)
+    result = 1 - spatial.distance.cosine(vector1, vector2)
+    print (result)
+    return result
+
 def wup_simi(text1, text2):
-    print(text1 + ' ' + text2)
+    #print(text1 + ' ' + text2)
     if (text1 == text2):
         return 1.0;
     w1 = wn.synsets(text1)
@@ -41,8 +74,8 @@ def wup_simi(text1, text2):
             currScore = wn.wup_similarity(synset1, synset2)
             if currScore > maxScore:
                 maxScore = currScore
-    print(maxScore)
-    #return maxScore
+    #print(text1 + ' ' + text2+ ' ', maxScore)
+    return maxScore
 
 def preprocessing(text):
     #bỏ in hoa
