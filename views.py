@@ -100,8 +100,8 @@ def test(request):
     englist = preprocessing(eng)
     vietlist= preprocessing(viet)
     
-    result = 0.5 * simiS(englist,vietlist) + 0.5 * simiR(englist,vietlist)
-
+    result = 0.5 * simiS(englist,vietlist) + 0.5 * simiR(englist,vietlist) 
+    result = round(result *100,2)
     context= {'engsenten': preprocessing(eng), 'vietsenten': preprocessing(viet), 'submit': submit, 'result': result}
     print ("result: ",result)
     return render(request, 'home.html', context )
