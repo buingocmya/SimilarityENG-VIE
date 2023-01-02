@@ -27,8 +27,13 @@ def wup_simi(text1, text2):
     #print(text1 + ' ' + text2+ ' ', maxScore)
     return maxScore
 
+def merge_list(listA,listB):
+    s = listA + listB
+    d = dict.fromkeys(s)
+    return list(d)
+
 def simiS(text1, text2):
-    listtext = text1 + text2
+    listtext = merge_list(text1,text2)
     print("list text: ", listtext)
     vector1 = []
     for w in listtext:
@@ -55,29 +60,29 @@ def simiS(text1, text2):
 
 def simiR(text1, text2):
     pi = 0.8
-    listtext = text1 + text2
+    listtext = merge_list(text1,text2)
     vector1 = []
-    for i in range(len(listtext)):
+    for w in listtext:
         max = 0
         index = 0
-        for w1 in text1:
-            tmp = wup_simi(listtext[i],w1)
+        for i in range(len(text1)):
+            tmp = wup_simi(text1[i],w)
             if (tmp>max and tmp>pi):
                 max = tmp
                 index = i 
-        vector1.append(index);
+        vector1.append(index + 1);
     print('vector1 =', vector1)
     
     vector2 = []
-    for i in range(len(listtext)):
+    for w in listtext:
         max = 0
         index = 0
-        for w2 in text2:
-            tmp = wup_simi(listtext[i],w2)
+        for i in range(len(text2)):
+            tmp = wup_simi(text2[i],w)
             if (tmp>max and tmp>pi):
                 max = tmp 
                 index = i
-        vector2.append(index);
+        vector2.append(index +1);
     print('vector2 =', vector2)
     a=0
     b=0
