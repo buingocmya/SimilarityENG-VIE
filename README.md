@@ -5,3 +5,5 @@ Chức năng: Tính toán sự tương đồng ngữ nghĩa hai câu tiếng Anh
 
 Ngôn ngữ sử dụng: Python
 
+Video demo: https://youtu.be/sn7sGyCnJAs
+
